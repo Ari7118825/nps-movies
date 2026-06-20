@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CineStream — Watch Movies & TV Shows</title>
     <style>
-        /* ─── RESET & BASE (kept from original) ─── */
+        /* ─── RESET & BASE ─── */
         * {
             margin: 0;
             padding: 0;
@@ -709,35 +709,121 @@
         .watch-header {
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 12px 24px;
-            background: rgba(0, 0, 0, 0.8);
+            gap: 12px;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid #333;
             flex-shrink: 0;
+            flex-wrap: wrap;
         }
         .watch-header .back-btn {
             display: inline-flex;
             background: rgba(255, 255, 255, 0.1);
             border: none;
             color: #fff;
-            padding: 8px 18px;
+            padding: 6px 14px;
             border-radius: 30px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             border: 1px solid #3a3a3a;
+            white-space: nowrap;
         }
         .watch-header .back-btn:hover {
             background: rgba(255, 255, 255, 0.2);
         }
         .watch-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             color: #fff;
             flex: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            min-width: 80px;
+        }
+        .watch-service-select {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid #555;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+            font-weight: 500;
+            min-width: 110px;
+            height: 32px;
+        }
+        .watch-service-select option {
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        /* ─── TOGGLE: Safe / Full ─── */
+        .mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 2px 4px;
+            border-radius: 30px;
+            border: 1px solid #444;
+            height: 32px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: border-color 0.2s, background 0.2s;
+            flex-shrink: 0;
+        }
+        .mode-toggle:hover {
+            border-color: #666;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .mode-toggle .mode-label {
+            padding: 2px 10px;
+            border-radius: 30px;
+            transition: all 0.25s;
+            color: #888;
+            font-weight: 500;
+        }
+        .mode-toggle .mode-label.active {
+            color: #fff;
+            background: #f5c518;
+            color: #141414;
+        }
+        .mode-toggle .mode-label:first-child {
+            margin-right: 2px;
+        }
+        .mode-toggle .mode-label:last-child {
+            margin-left: 2px;
+        }
+        .mode-toggle .divider {
+            width: 1px;
+            height: 20px;
+            background: #444;
+        }
+
+        /* ─── OPEN IN NEW TAB BUTTON ─── */
+        .btn-open-tab {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid #555;
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background 0.2s, border-color 0.2s;
+            white-space: nowrap;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-open-tab:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: #f5c518;
         }
 
         .watch-container {
@@ -778,6 +864,29 @@
         }
         .watch-player .fallback-msg .btn-open:hover {
             background: #ffd83b;
+        }
+        .watch-player .mode-indicator {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid #444;
+            pointer-events: none;
+            text-align: center;
+            max-width: 90%;
+            transition: all 0.3s;
+        }
+        .watch-player .mode-indicator.safe {
+            color: #6f6;
+            border-color: #2a5a2a;
+        }
+        .watch-player .mode-indicator.full {
+            color: #f5c518;
+            border-color: #5a4a2a;
         }
 
         .watch-sidebar {
@@ -846,7 +955,30 @@
                 min-height: 40vh;
             }
             .watch-header .watch-title {
-                font-size: 15px;
+                font-size: 14px;
+                min-width: 60px;
+            }
+            .watch-header {
+                gap: 8px;
+                padding: 8px 14px;
+            }
+            .watch-service-select {
+                min-width: 90px;
+                font-size: 11px;
+                height: 28px;
+                padding: 2px 10px;
+            }
+            .mode-toggle {
+                height: 28px;
+                font-size: 11px;
+            }
+            .mode-toggle .mode-label {
+                padding: 1px 8px;
+            }
+            .btn-open-tab {
+                height: 28px;
+                font-size: 11px;
+                padding: 2px 10px;
             }
             .detail-hero {
                 padding: 20px 20px 40px;
@@ -936,6 +1068,28 @@
             .watch-sidebar {
                 max-height: 30vh;
             }
+            .watch-header .watch-title {
+                font-size: 12px;
+                min-width: 50px;
+            }
+            .watch-service-select {
+                min-width: 70px;
+                font-size: 10px;
+                height: 26px;
+                padding: 2px 8px;
+            }
+            .mode-toggle {
+                height: 26px;
+                font-size: 10px;
+            }
+            .mode-toggle .mode-label {
+                padding: 1px 6px;
+            }
+            .btn-open-tab {
+                height: 26px;
+                font-size: 10px;
+                padding: 2px 8px;
+            }
         }
     </style>
 </head>
@@ -1014,16 +1168,33 @@
     <!-- ═══ WATCH VIEW ═══ -->
     <div id="watch-view" class="hidden">
         <div class="watch-header">
-            <button class="back-btn" id="watchBackBtn">← Back to Details</button>
+            <button class="back-btn" id="watchBackBtn">← Back</button>
             <span class="watch-title" id="watchTitle">Now Playing</span>
+            <select class="watch-service-select" id="serviceSelect">
+                <option value="vixsrc">VixSrc</option>
+                <option value="vidcore">VidCore</option>
+                <option value="videasy">Videasy</option>
+                <option value="peachify">Peachify</option>
+                <option value="vidsrc">Vidsrc</option>
+                <option value="vidapi">VidAPI</option>
+            </select>
+            <!-- Mode Toggle: Safe (no sandbox) / Full (sandbox) -->
+            <div class="mode-toggle" id="modeToggle" title="Safe: best compatibility | Full: blocks popups">
+                <span class="mode-label active" data-mode="safe">Safe</span>
+                <span class="divider"></span>
+                <span class="mode-label" data-mode="full">Full</span>
+            </div>
+            <!-- Open in new tab button -->
+            <button class="btn-open-tab" id="openTabBtn">↗ New Tab</button>
         </div>
         <div class="watch-container">
             <div class="watch-player" id="watchPlayer">
                 <iframe id="watchIframe" allowfullscreen></iframe>
                 <div class="fallback-msg hidden" id="fallbackMsg">
                     <p>⚠️ Unable to embed the player. Click below to open in a new tab.</p>
-                    <button class="btn-open" id="openNewTabBtn">Open in new tab</button>
+                    <button class="btn-open" id="fallbackOpenBtn">Open in new tab</button>
                 </div>
+                <div class="mode-indicator safe" id="modeIndicator">🛡️ Safe Mode — best compatibility</div>
             </div>
             <div class="watch-sidebar" id="watchSidebar">
                 <h3 id="sidebarTitle">Next Episodes</h3>
@@ -1040,7 +1211,40 @@
         const TMDB_BASE = 'https://api.themoviedb.org/3';
         const TMDB_IMAGE = 'https://image.tmdb.org/t/p/w500';
         const TMDB_BACKDROP = 'https://image.tmdb.org/t/p/original';
-        const VIXSRC_BASE = 'https://vixsrc.to';
+
+        // Service URL builders
+        const SERVICES = {
+            vixsrc: {
+                name: 'VixSrc',
+                movie: (id) => `https://vixsrc.to/movie/${id}`,
+                tv: (id, season, episode) => `https://vixsrc.to/tv/${id}/${season}/${episode}`
+            },
+            vidcore: {
+                name: 'VidCore',
+                movie: (id) => `https://vidcore.net/movie/${id}`,
+                tv: (id, season, episode) => `https://vidcore.net/tv/${id}/${season}/${episode}`
+            },
+            videasy: {
+                name: 'Videasy',
+                movie: (id) => `https://player.videasy.net/movie/${id}`,
+                tv: (id, season, episode) => `https://player.videasy.net/tv/${id}/${season}/${episode}`
+            },
+            peachify: {
+                name: 'Peachify',
+                movie: (id) => `https://peachify.top/embed/movie/${id}`,
+                tv: (id, season, episode) => `https://peachify.top/embed/tv/${id}/${season}/${episode}`
+            },
+            vidsrc: {
+                name: 'Vidsrc',
+                movie: (id) => `https://vidsrc.ru/movie/${id}`,
+                tv: (id, season, episode) => `https://vidsrc.ru/tv/${id}/${season}/${episode}`
+            },
+            vidapi: {
+                name: 'VidAPI',
+                movie: (id) => `https://vaplayer.ru/embed/movie/${id}`,
+                tv: (id, season, episode) => `https://vaplayer.ru/embed/tv/${id}/${season}/${episode}`
+            }
+        };
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  DOM REFS
@@ -1076,7 +1280,11 @@
         const sidebarTitle = document.getElementById('sidebarTitle');
         const watchBackBtn = document.getElementById('watchBackBtn');
         const fallbackMsg = document.getElementById('fallbackMsg');
-        const openNewTabBtn = document.getElementById('openNewTabBtn');
+        const fallbackOpenBtn = document.getElementById('fallbackOpenBtn');
+        const serviceSelect = document.getElementById('serviceSelect');
+        const modeToggle = document.getElementById('modeToggle');
+        const modeIndicator = document.getElementById('modeIndicator');
+        const openTabBtn = document.getElementById('openTabBtn');
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  STATE
@@ -1088,6 +1296,9 @@
         let currentTvId = null;
         let currentWatchUrl = '';
         let currentWatchItem = null; // { type, id, season, episode, title }
+
+        // mode: 'safe' = no sandbox (best compatibility), 'full' = sandbox (blocks popups)
+        let currentMode = 'safe';
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  HELPERS
@@ -1314,22 +1525,18 @@
             detailGenres.innerHTML = genres.map(g => `<span>${g.name}</span>`).join('');
             detailOverview.textContent = overview;
 
-            // Play button - use TMDB ID
             detailPlayBtn.textContent = '▶ Play Movie';
             detailPlayBtn.onclick = () => {
                 openWatch('movie', tmdbId, null, null, title);
             };
 
-            // Hide season dropdown, show year label
             seasonSelectWrapper.classList.remove('visible');
             movieYearLabel.textContent = year;
             movieYearLabel.classList.add('visible');
 
-            // Hide episodes, show similar
             episodeSection.classList.add('hidden');
             similarSection.classList.remove('hidden');
 
-            // Load cast and similar
             try {
                 const credits = await fetchCredits(tmdbId, 'movie');
                 renderCast(credits.cast || []);
@@ -1380,7 +1587,6 @@
             detailGenres.innerHTML = genres.map(g => `<span>${g.name}</span>`).join('');
             detailOverview.textContent = overview;
 
-            // Play button -> first episode
             detailPlayBtn.textContent = '▶ Watch Series';
             detailPlayBtn.onclick = () => {
                 const firstSeason = realSeasons.length > 0 ? realSeasons[0].season_number : 1;
@@ -1399,7 +1605,6 @@
                 })();
             };
 
-            // Season dropdown
             seasonSelectWrapper.classList.add('visible');
             movieYearLabel.classList.remove('visible');
 
@@ -1422,7 +1627,6 @@
                 seasonSelect.value = '1';
             }
 
-            // Episodes
             episodeSection.classList.remove('hidden');
             similarSection.classList.add('hidden');
             currentSeasonEpisodes = {};
@@ -1434,7 +1638,6 @@
                 await loadSeasonEpisodes(tmdbId, parseInt(initialSeason, 10));
             }
 
-            // Load cast
             try {
                 const credits = await fetchCredits(tmdbId, 'tv');
                 renderCast(credits.cast || []);
@@ -1538,7 +1741,6 @@
                 </div>
               </div>
             `;
-                // Click on card plays episode
                 card.addEventListener('click', (e) => {
                     if (e.target.closest('.btn-play-ep')) return;
                     const btn = card.querySelector('.btn-play-ep');
@@ -1552,7 +1754,6 @@
                 episodeGrid.appendChild(card);
             });
 
-            // Attach play events to buttons
             document.querySelectorAll('.btn-play-ep').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1569,25 +1770,63 @@
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  WATCH VIEW
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        function openWatch(type, id, season, episode, title) {
-            currentWatchItem = { type, id, season, episode, title };
-            switchView('watch');
-
-            watchTitle.textContent = title || 'Now Playing';
-            let url = '';
+        function buildWatchUrl(serviceKey, type, id, season, episode) {
+            const service = SERVICES[serviceKey];
+            if (!service) return null;
             if (type === 'movie') {
-                url = `${VIXSRC_BASE}/movie/${id}`;
+                return service.movie(id);
             } else {
-                url = `${VIXSRC_BASE}/tv/${id}/${season}/${episode}`;
+                return service.tv(id, season, episode);
             }
-            currentWatchUrl = url;
+        }
 
-            // Try to embed in iframe
+        function getSandboxForMode(mode) {
+            // 'safe' = no sandbox (best compatibility)
+            // 'full' = sandbox with restrictions (blocks popups/redirects)
+            if (mode === 'full') {
+                return 'allow-scripts allow-same-origin allow-forms allow-modals allow-presentation';
+            }
+            return ''; // no sandbox
+        }
+
+        function updateModeUI() {
+            // Update toggle labels
+            const labels = modeToggle.querySelectorAll('.mode-label');
+            labels.forEach(label => {
+                const mode = label.dataset.mode;
+                if (mode === currentMode) {
+                    label.classList.add('active');
+                } else {
+                    label.classList.remove('active');
+                }
+            });
+
+            // Update indicator
+            if (currentMode === 'safe') {
+                modeIndicator.textContent = '🛡️ Safe Mode — best compatibility';
+                modeIndicator.className = 'mode-indicator safe';
+            } else {
+                modeIndicator.textContent = '🔒 Full Mode — popups blocked';
+                modeIndicator.className = 'mode-indicator full';
+            }
+        }
+
+        function loadPlayer(url) {
             fallbackMsg.classList.add('hidden');
             watchIframe.classList.remove('hidden');
+
+            // Apply sandbox based on current mode
+            const sandbox = getSandboxForMode(currentMode);
+            if (sandbox) {
+                watchIframe.setAttribute('sandbox', sandbox);
+            } else {
+                watchIframe.removeAttribute('sandbox');
+            }
+
             watchIframe.src = url;
 
-            // If iframe fails, show fallback after timeout
+            updateModeUI();
+
             let iframeLoaded = false;
             const loadHandler = () => { iframeLoaded = true; };
             watchIframe.addEventListener('load', loadHandler);
@@ -1598,10 +1837,91 @@
                 }
                 watchIframe.removeEventListener('load', loadHandler);
             }, 5000);
+        }
+
+        // ─── Mode Toggle ───
+        modeToggle.addEventListener('click', function(e) {
+            // Determine which mode was clicked
+            const label = e.target.closest('.mode-label');
+            if (label) {
+                const mode = label.dataset.mode;
+                if (mode !== currentMode) {
+                    currentMode = mode;
+                    if (currentWatchUrl) {
+                        const url = currentWatchUrl;
+                        fallbackMsg.classList.add('hidden');
+                        watchIframe.classList.remove('hidden');
+                        const sandbox = getSandboxForMode(currentMode);
+                        if (sandbox) {
+                            watchIframe.setAttribute('sandbox', sandbox);
+                        } else {
+                            watchIframe.removeAttribute('sandbox');
+                        }
+                        watchIframe.src = url;
+                        updateModeUI();
+
+                        // Re-run fallback timer
+                        let iframeLoaded = false;
+                        const loadHandler = () => { iframeLoaded = true; };
+                        watchIframe.addEventListener('load', loadHandler);
+                        setTimeout(() => {
+                            if (!iframeLoaded) {
+                                watchIframe.classList.add('hidden');
+                                fallbackMsg.classList.remove('hidden');
+                            }
+                            watchIframe.removeEventListener('load', loadHandler);
+                        }, 5000);
+                    } else {
+                        updateModeUI();
+                    }
+                }
+            }
+        });
+
+        // ─── Open in new tab (header button) ───
+        openTabBtn.addEventListener('click', () => {
+            if (currentWatchUrl) {
+                window.open(currentWatchUrl, '_blank');
+            }
+        });
+
+        // ─── Open in new tab (fallback button) ───
+        fallbackOpenBtn.addEventListener('click', () => {
+            if (currentWatchUrl) {
+                window.open(currentWatchUrl, '_blank');
+            }
+        });
+
+        function openWatch(type, id, season, episode, title) {
+            currentWatchItem = { type, id, season, episode, title };
+            switchView('watch');
+
+            watchTitle.textContent = title || 'Now Playing';
+
+            // Build URL with current service
+            const serviceKey = serviceSelect.value;
+            const url = buildWatchUrl(serviceKey, type, id, season, episode);
+            if (url) {
+                currentWatchUrl = url;
+                loadPlayer(url);
+            } else {
+                alert('Invalid service selected.');
+            }
 
             // Populate sidebar
             populateSidebar(type, id, season, episode);
         }
+
+        // Service change handler
+        serviceSelect.addEventListener('change', function() {
+            if (!currentWatchItem) return;
+            const { type, id, season, episode } = currentWatchItem;
+            const url = buildWatchUrl(this.value, type, id, season, episode);
+            if (url) {
+                currentWatchUrl = url;
+                loadPlayer(url);
+            }
+        });
 
         async function populateSidebar(type, id, season, episode) {
             sidebarList.innerHTML = '';
@@ -1630,7 +1950,6 @@
                     sidebarList.innerHTML = '<p style="color:#666;">No similar movies found.</p>';
                 }
             } else {
-                // TV: show next episodes from current season, or next season
                 sidebarTitle.textContent = 'Next Episodes';
                 try {
                     const eps = await fetchSeasonEpisodes(id, season);
@@ -1737,15 +2056,6 @@
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  OPEN IN NEW TAB
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        openNewTabBtn.addEventListener('click', () => {
-            if (currentWatchUrl) {
-                window.open(currentWatchUrl, '_blank');
-            }
-        });
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  SEARCH & HOME
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         async function loadHome() {
@@ -1826,7 +2136,9 @@
         window.openDetail = openDetail;
 
         console.log('🎬 CineStream ready — powered by TMDB');
-        console.log('🔑 Click any movie or show to explore!');
+        console.log('🛡️ Default mode: Safe (no sandbox) — best compatibility with all services.');
+        console.log('🔒 Click "Full" to enable sandbox and block popups/redirects.');
+        console.log('↗ Use the "New Tab" button to open the video in a separate tab.');
     </script>
 </body>
 </html>
