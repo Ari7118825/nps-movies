@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CineStream — Watch Movies & TV Shows</title>
     <style>
-        /* ─── RESET & BASE ─── */
+        /* ─── RESET & BASE (kept from original) ─── */
         * {
             margin: 0;
             padding: 0;
@@ -29,7 +29,6 @@
             font-family: inherit;
         }
 
-        /* ─── SCROLLBAR ─── */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -511,13 +510,13 @@
             outline: none;
             cursor: pointer;
             font-weight: 500;
+            min-width: 80px;
         }
         .season-select-wrapper select option {
             background: #1a1a1a;
             color: #fff;
         }
 
-        /* Movie year label (no dropdown) */
         .movie-year-label {
             display: none;
             color: #aaa;
@@ -561,10 +560,11 @@
             transition: transform 0.2s, border-color 0.2s;
             display: flex;
             flex-direction: column;
+            cursor: pointer;
         }
         .episode-card:hover {
             transform: translateY(-4px);
-            border-color: #444;
+            border-color: #f5c518;
         }
         .episode-card .thumb {
             width: 100%;
@@ -635,13 +635,218 @@
             background: #ffd83b;
         }
 
-        /* ─── RESPONSIVE ─── */
+        .episode-empty {
+            grid-column: 1 / -1;
+            padding: 40px 20px;
+            text-align: center;
+            color: #666;
+            font-size: 15px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 1px dashed #333;
+        }
+
+        /* ─── CAST SECTION ─── */
+        .cast-scroll {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 8px 0 16px;
+            scrollbar-width: thin;
+        }
+        .cast-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+        .cast-scroll::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 10px;
+        }
+        .cast-item {
+            flex: 0 0 120px;
+            text-align: center;
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 8px;
+            border: 1px solid #2a2a2a;
+            transition: transform 0.2s;
+        }
+        .cast-item:hover {
+            transform: scale(1.05);
+            border-color: #444;
+        }
+        .cast-item img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 50%;
+            background: #0a0a0a;
+        }
+        .cast-item .cast-name {
+            font-size: 13px;
+            font-weight: 500;
+            margin-top: 6px;
+            color: #eee;
+        }
+        .cast-item .cast-char {
+            font-size: 11px;
+            color: #999;
+        }
+
+        /* ─── WATCH VIEW ─── */
+        #watch-view {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .watch-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 24px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #333;
+            flex-shrink: 0;
+        }
+        .watch-header .back-btn {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #3a3a3a;
+        }
+        .watch-header .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .watch-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .watch-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .watch-player {
+            flex: 1;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 300px;
+        }
+        .watch-player iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
+        }
+        .watch-player .fallback-msg {
+            color: #888;
+            text-align: center;
+            padding: 20px;
+        }
+        .watch-player .fallback-msg .btn-open {
+            background: #f5c518;
+            color: #141414;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 40px;
+            font-weight: 600;
+            margin-top: 12px;
+            transition: background 0.2s;
+        }
+        .watch-player .fallback-msg .btn-open:hover {
+            background: #ffd83b;
+        }
+
+        .watch-sidebar {
+            width: 320px;
+            background: #1a1a1a;
+            border-left: 1px solid #333;
+            overflow-y: auto;
+            padding: 16px;
+            flex-shrink: 0;
+        }
+        .watch-sidebar h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #f0f0f0;
+        }
+        .watch-sidebar .sidebar-item {
+            display: flex;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 10px;
+            background: #222;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: 1px solid #333;
+        }
+        .watch-sidebar .sidebar-item:hover {
+            background: #2a2a2a;
+            border-color: #f5c518;
+        }
+        .watch-sidebar .sidebar-item img {
+            width: 60px;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #0a0a0a;
+        }
+        .watch-sidebar .sidebar-item .info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .watch-sidebar .sidebar-item .info .title {
+            font-weight: 500;
+            font-size: 14px;
+            color: #eee;
+        }
+        .watch-sidebar .sidebar-item .info .sub {
+            font-size: 12px;
+            color: #999;
+        }
+
         @media (max-width: 900px) {
-            .header {
-                padding: 12px 20px;
+            .watch-container {
+                flex-direction: column;
             }
-            #home-view {
-                padding: 12px 20px 40px;
+            .watch-sidebar {
+                width: 100%;
+                max-height: 40vh;
+                border-left: none;
+                border-top: 1px solid #333;
+            }
+            .watch-player {
+                min-height: 40vh;
+            }
+            .watch-header .watch-title {
+                font-size: 15px;
             }
             .detail-hero {
                 padding: 20px 20px 40px;
@@ -728,6 +933,9 @@
                 padding: 10px 24px;
                 font-size: 14px;
             }
+            .watch-sidebar {
+                max-height: 30vh;
+            }
         }
     </style>
 </head>
@@ -774,18 +982,20 @@
                     <p class="detail-overview" id="detailOverview">Overview</p>
                     <div class="detail-actions">
                         <button class="btn-play" id="detailPlayBtn">▶ Play</button>
-                        <!-- Season dropdown (TV only) -->
                         <div class="season-select-wrapper" id="seasonSelectWrapper">
                             <label for="seasonSelect">Season</label>
-                            <select id="seasonSelect">
-                                <option value="all">All Seasons</option>
-                            </select>
+                            <select id="seasonSelect"></select>
                         </div>
-                        <!-- Movie year label (no dropdown) -->
                         <span class="movie-year-label" id="movieYearLabel">2024</span>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Cast -->
+        <div class="detail-section" id="castSection">
+            <h2>Cast</h2>
+            <div class="cast-scroll" id="castScroll"></div>
         </div>
 
         <!-- Episodes (TV only) -->
@@ -793,13 +1003,43 @@
             <h2>Episodes</h2>
             <div class="episodes-grid" id="episodeGrid"></div>
         </div>
+
+        <!-- Similar / Related (Movies) -->
+        <div class="detail-section hidden" id="similarSection">
+            <h2>Similar Movies</h2>
+            <div class="grid" id="similarGrid"></div>
+        </div>
+    </div>
+
+    <!-- ═══ WATCH VIEW ═══ -->
+    <div id="watch-view" class="hidden">
+        <div class="watch-header">
+            <button class="back-btn" id="watchBackBtn">← Back to Details</button>
+            <span class="watch-title" id="watchTitle">Now Playing</span>
+        </div>
+        <div class="watch-container">
+            <div class="watch-player" id="watchPlayer">
+                <iframe id="watchIframe" allowfullscreen></iframe>
+                <div class="fallback-msg hidden" id="fallbackMsg">
+                    <p>⚠️ Unable to embed the player. Click below to open in a new tab.</p>
+                    <button class="btn-open" id="openNewTabBtn">Open in new tab</button>
+                </div>
+            </div>
+            <div class="watch-sidebar" id="watchSidebar">
+                <h3 id="sidebarTitle">Next Episodes</h3>
+                <div id="sidebarList"></div>
+            </div>
+        </div>
     </div>
 
     <script>
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  CONFIG
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        const API_BASE = 'https://api.imdbapi.dev';
+        const TMDB_API_KEY = '086323fee7102f209a9c773da9381ea1';
+        const TMDB_BASE = 'https://api.themoviedb.org/3';
+        const TMDB_IMAGE = 'https://image.tmdb.org/t/p/w500';
+        const TMDB_BACKDROP = 'https://image.tmdb.org/t/p/original';
         const VIXSRC_BASE = 'https://vixsrc.to';
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -807,12 +1047,12 @@
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         const homeView = document.getElementById('home-view');
         const detailView = document.getElementById('detail-view');
+        const watchView = document.getElementById('watch-view');
         const homeGrid = document.getElementById('homeGrid');
         const searchInput = document.getElementById('searchInput');
         const searchBtn = document.getElementById('searchBtn');
         const backBtn = document.getElementById('backBtn');
 
-        // Detail elements
         const detailBackdrop = document.getElementById('detailBackdrop');
         const detailPoster = document.getElementById('detailPoster').querySelector('img');
         const detailTitle = document.getElementById('detailTitle');
@@ -825,14 +1065,29 @@
         const seasonSelect = document.getElementById('seasonSelect');
         const seasonSelectWrapper = document.getElementById('seasonSelectWrapper');
         const movieYearLabel = document.getElementById('movieYearLabel');
+        const castScroll = document.getElementById('castScroll');
+        const similarSection = document.getElementById('similarSection');
+        const similarGrid = document.getElementById('similarGrid');
+
+        const watchIframe = document.getElementById('watchIframe');
+        const watchTitle = document.getElementById('watchTitle');
+        const watchSidebar = document.getElementById('watchSidebar');
+        const sidebarList = document.getElementById('sidebarList');
+        const sidebarTitle = document.getElementById('sidebarTitle');
+        const watchBackBtn = document.getElementById('watchBackBtn');
+        const fallbackMsg = document.getElementById('fallbackMsg');
+        const openNewTabBtn = document.getElementById('openNewTabBtn');
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  STATE
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         let currentDetailId = null;
         let currentDetailType = null;
-        let allEpisodes = [];
-        let seasonsData = []; // array of {season: string, episodeCount: number}
+        let currentSeasons = [];
+        let currentSeasonEpisodes = {};
+        let currentTvId = null;
+        let currentWatchUrl = '';
+        let currentWatchItem = null; // { type, id, season, episode, title }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  HELPERS
@@ -859,36 +1114,111 @@
             if (view === 'home') {
                 homeView.classList.remove('hidden');
                 detailView.classList.add('hidden');
+                watchView.classList.add('hidden');
                 backBtn.classList.remove('visible');
                 document.title = 'CineStream — Watch Movies & TV Shows';
-            } else {
+            } else if (view === 'detail') {
                 homeView.classList.add('hidden');
                 detailView.classList.remove('hidden');
+                watchView.classList.add('hidden');
                 backBtn.classList.add('visible');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                document.title = 'CineStream — Details';
+            } else if (view === 'watch') {
+                homeView.classList.add('hidden');
+                detailView.classList.add('hidden');
+                watchView.classList.remove('hidden');
+                backBtn.classList.remove('visible');
+                document.title = 'CineStream — Watching';
             }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ─── Render Home Grid ───
-        function renderHomeGrid(movies) {
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function getImageUrl(path) {
+            if (!path) return '';
+            return `${TMDB_IMAGE}${path}`;
+        }
+
+        function getBackdropUrl(path) {
+            if (!path) return '';
+            return `${TMDB_BACKDROP}${path}`;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  TMDB API CALLS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        async function tmdbFetch(endpoint) {
+            const url = `${TMDB_BASE}${endpoint}${endpoint.includes('?') ? '&' : '?'}api_key=${TMDB_API_KEY}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`TMDB error: ${res.status} ${res.statusText}`);
+            return res.json();
+        }
+
+        async function fetchTrending() {
+            const data = await tmdbFetch('/trending/all/week?language=en-US');
+            return data.results || [];
+        }
+
+        async function searchTmdb(query) {
+            const data = await tmdbFetch(`/search/multi?query=${encodeURIComponent(query.trim())}&language=en-US`);
+            return data.results || [];
+        }
+
+        async function fetchMovieDetails(id) {
+            return tmdbFetch(`/movie/${id}?language=en-US`);
+        }
+
+        async function fetchTvDetails(id) {
+            return tmdbFetch(`/tv/${id}?language=en-US`);
+        }
+
+        async function fetchSeasonEpisodes(tvId, seasonNumber) {
+            const data = await tmdbFetch(`/tv/${tvId}/season/${seasonNumber}?language=en-US`);
+            return data.episodes || [];
+        }
+
+        async function fetchCredits(id, type) {
+            const endpoint = type === 'movie' ? `/movie/${id}/credits` : `/tv/${id}/credits`;
+            return tmdbFetch(endpoint);
+        }
+
+        async function fetchSimilar(id, type) {
+            const endpoint = type === 'movie' ? `/movie/${id}/similar` : `/tv/${id}/similar`;
+            const data = await tmdbFetch(endpoint);
+            return data.results || [];
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  RENDER: HOME GRID
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function renderHomeGrid(items) {
             homeGrid.innerHTML = '';
-            if (!movies || movies.length === 0) {
+            if (!items || items.length === 0) {
                 showStatus(homeGrid, '🔍', 'No results found. Try a different search.');
                 return;
             }
-            movies.forEach(m => {
+
+            items.forEach(item => {
+                const isMovie = item.media_type === 'movie' || item.media_type === undefined;
+                const tmdbId = item.id;
+                const title = item.title || item.name || 'Untitled';
+                const year = item.release_date ? item.release_date.slice(0, 4) :
+                    item.first_air_date ? item.first_air_date.slice(0, 4) : '—';
+                const rating = item.vote_average ? item.vote_average.toFixed(1) : '—';
+                const poster = item.poster_path ? getImageUrl(item.poster_path) : '';
+                const type = isMovie ? 'movie' : 'tv';
+                const typeLabel = isMovie ? '🎬 Movie' : '📺 Show';
+
                 const card = document.createElement('div');
                 card.className = 'movie-card';
-                const title = m.primaryTitle || m.title || 'Untitled';
-                const imdbId = m.id || '';
-                const type = m.type || 'movie';
-                const year = m.startYear || m.year || '—';
-                const rating = m.rating?.aggregateRating ?? m.rating ?? '—';
-                const image = m.primaryImage?.url || '';
-
                 card.innerHTML = `
               <div class="poster">
-                <img src="${image}" alt="${title}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <img src="${poster}" alt="${title}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <span class="fallback-icon" style="display:none;">🎬</span>
               </div>
               <div class="info">
@@ -900,32 +1230,80 @@
                     ${rating}
                   </span>
                 </div>
-                <div class="type-badge">${type === 'tvSeries' ? '📺 Show' : '🎬 Movie'}</div>
+                <div class="type-badge">${typeLabel}</div>
               </div>
             `;
-                card.addEventListener('click', () => openDetail(imdbId));
+                card.addEventListener('click', () => openDetail(tmdbId, type));
                 homeGrid.appendChild(card);
             });
         }
 
-        // ─── Render Detail View ───
-        function renderDetail(data, episodes, seasons) {
-            allEpisodes = episodes || [];
-            seasonsData = seasons || [];
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  RENDER: DETAIL VIEW
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function renderCast(cast) {
+            castScroll.innerHTML = '';
+            if (!cast || cast.length === 0) {
+                castScroll.innerHTML = '<p style="color:#666; padding:10px;">No cast information available.</p>';
+                return;
+            }
+            const top = cast.slice(0, 12);
+            top.forEach(person => {
+                const div = document.createElement('div');
+                div.className = 'cast-item';
+                const img = person.profile_path ? getImageUrl(person.profile_path) : '';
+                div.innerHTML = `
+              <img src="${img}" alt="${person.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\' viewBox=\'0 0 120 120\'%3E%3Crect fill=\'%23333\' width=\'120\' height=\'120\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' font-size=\'14\' fill=\'%23999\' text-anchor=\'middle\' dy=\'.3em\'%3E👤%3C/text%3E%3C/svg%3E';">
+              <div class="cast-name">${person.name}</div>
+              <div class="cast-char">${person.character || ''}</div>
+            `;
+                castScroll.appendChild(div);
+            });
+        }
 
-            // Hero
-            const title = data.primaryTitle || data.title || 'Untitled';
-            const image = data.primaryImage?.url || '';
-            const backdrop = data.primaryImage?.url || image;
-            const year = data.startYear || data.year || '—';
-            const rating = data.rating?.aggregateRating ?? data.rating ?? '—';
+        function renderSimilar(items) {
+            similarGrid.innerHTML = '';
+            if (!items || items.length === 0) {
+                similarGrid.innerHTML = '<p style="color:#666; padding:10px;">No similar titles found.</p>';
+                return;
+            }
+            items.slice(0, 8).forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                const title = item.title || item.name || 'Untitled';
+                const year = item.release_date ? item.release_date.slice(0, 4) :
+                    item.first_air_date ? item.first_air_date.slice(0, 4) : '—';
+                const poster = item.poster_path ? getImageUrl(item.poster_path) : '';
+                const type = item.media_type || (item.title ? 'movie' : 'tv');
+                card.innerHTML = `
+              <div class="poster">
+                <img src="${poster}" alt="${title}" loading="lazy" onerror="this.style.display='none';">
+              </div>
+              <div class="info">
+                <div class="title">${title}</div>
+                <div class="meta">
+                  <span class="year">${year}</span>
+                </div>
+              </div>
+            `;
+                card.addEventListener('click', () => openDetail(item.id, type));
+                similarGrid.appendChild(card);
+            });
+        }
+
+        async function renderMovieDetail(data) {
+            const title = data.title || 'Untitled';
+            const year = data.release_date ? data.release_date.slice(0, 4) : '—';
+            const rating = data.vote_average ? data.vote_average.toFixed(1) : '—';
             const runtime = data.runtime ? `${data.runtime} min` : '—';
             const genres = data.genres || [];
-            const type = data.type || 'movie';
-            currentDetailType = type;
+            const poster = data.poster_path ? getImageUrl(data.poster_path) : '';
+            const backdrop = data.backdrop_path ? getBackdropUrl(data.backdrop_path) : poster;
+            const overview = data.overview || 'No overview available.';
+            const tmdbId = data.id;
 
             detailBackdrop.style.backgroundImage = `url(${backdrop})`;
-            detailPoster.src = image || 'https://via.placeholder.com/300x450/1a1a1a/444?text=No+Poster';
+            detailPoster.src = poster || 'https://via.placeholder.com/300x450/1a1a1a/444?text=No+Poster';
             detailPoster.alt = title;
             detailTitle.textContent = title;
             detailMeta.innerHTML = `
@@ -933,245 +1311,398 @@
             <span class="year">${year}</span>
             <span class="runtime">${runtime}</span>
           `;
-            detailGenres.innerHTML = genres.map(g => `<span>${g}</span>`).join('');
-            detailOverview.textContent = data.overview || data.plot || 'No overview available.';
+            detailGenres.innerHTML = genres.map(g => `<span>${g.name}</span>`).join('');
+            detailOverview.textContent = overview;
 
-            // Play button
-            if (type === 'tvSeries' || type === 'tv') {
-                detailPlayBtn.textContent = '▶ Watch Series';
-                detailPlayBtn.onclick = () => {
-                    document.getElementById('episodeSection').scrollIntoView({ behavior: 'smooth' });
-                };
-            } else {
-                detailPlayBtn.textContent = '▶ Play Movie';
-                detailPlayBtn.onclick = () => {
-                    window.open(`${VIXSRC_BASE}/movie/${currentDetailId}`, '_blank');
-                };
-            }
+            // Play button - use TMDB ID
+            detailPlayBtn.textContent = '▶ Play Movie';
+            detailPlayBtn.onclick = () => {
+                openWatch('movie', tmdbId, null, null, title);
+            };
 
-            // ─── Seasons Dropdown (TV only) ───
-            if (type === 'tvSeries' || type === 'tv') {
-                seasonSelectWrapper.classList.add('visible');
-                movieYearLabel.classList.remove('visible');
+            // Hide season dropdown, show year label
+            seasonSelectWrapper.classList.remove('visible');
+            movieYearLabel.textContent = year;
+            movieYearLabel.classList.add('visible');
 
-                // Build dropdown options from seasonsData
-                let optionsHTML = '';
-                if (seasonsData.length > 1) {
-                    optionsHTML += '<option value="all">All Seasons</option>';
-                }
-                // seasonsData is array of { season: "Season 1", episodeCount: 5 }
-                seasonsData.forEach(s => {
-                    // Extract season number from string like "Season 1"
-                    const numMatch = s.season.match(/\d+/);
-                    const seasonNum = numMatch ? parseInt(numMatch[0], 10) : 0;
-                    if (seasonNum > 0) {
-                        optionsHTML += `<option value="${seasonNum}">${s.season}</option>`;
-                    } else {
-                        // fallback
-                        optionsHTML += `<option value="${s.season}">${s.season}</option>`;
-                    }
-                });
+            // Hide episodes, show similar
+            episodeSection.classList.add('hidden');
+            similarSection.classList.remove('hidden');
 
-                if (optionsHTML === '') {
-                    // No seasons data, fallback to episode-derived seasons
-                    const seasonNumbers = allEpisodes
-                        .map(ep => ep.seasonNumber || ep.season || 1)
-                        .filter(n => n !== undefined && n !== null);
-                    const unique = [...new Set(seasonNumbers)].sort((a, b) => a - b);
-                    if (unique.length > 1) {
-                        optionsHTML += '<option value="all">All Seasons</option>';
-                    }
-                    unique.forEach(s => {
-                        optionsHTML += `<option value="${s}">Season ${s}</option>`;
-                    });
-                    if (unique.length === 0) {
-                        optionsHTML = '<option value="1">Season 1</option>';
-                    }
-                }
+            // Load cast and similar
+            try {
+                const credits = await fetchCredits(tmdbId, 'movie');
+                renderCast(credits.cast || []);
+            } catch (_) { renderCast([]); }
 
-                seasonSelect.innerHTML = optionsHTML;
-
-                // Set default selection
-                if (seasonsData.length > 1) {
-                    seasonSelect.value = 'all';
-                } else if (seasonsData.length === 1) {
-                    const first = seasonsData[0];
-                    const numMatch = first.season.match(/\d+/);
-                    const seasonNum = numMatch ? parseInt(numMatch[0], 10) : 0;
-                    seasonSelect.value = seasonNum > 0 ? String(seasonNum) : first.season;
-                } else {
-                    // fallback: use episode data
-                    const numbers = allEpisodes.map(ep => ep.seasonNumber || ep.season || 1);
-                    const unique = [...new Set(numbers)].sort((a, b) => a - b);
-                    if (unique.length > 0) {
-                        seasonSelect.value = unique.length > 1 ? 'all' : String(unique[0]);
-                    } else {
-                        seasonSelect.value = '1';
-                    }
-                }
-
-            } else {
-                // Movie: hide season dropdown, show year label
-                seasonSelectWrapper.classList.remove('visible');
-                movieYearLabel.textContent = year;
-                movieYearLabel.classList.add('visible');
-            }
-
-            // ─── Episodes (TV only) ───
-            episodeGrid.innerHTML = '';
-            if (type === 'tvSeries' || type === 'tv') {
-                episodeSection.classList.remove('hidden');
-                if (allEpisodes.length > 0) {
-                    // Sort episodes by season and episode number
-                    const sorted = [...allEpisodes].sort((a, b) => {
-                        const sa = a.seasonNumber || a.season || 1;
-                        const sb = b.seasonNumber || b.season || 1;
-                        if (sa !== sb) return sa - sb;
-                        const ea = a.episodeNumber || a.episode || 1;
-                        const eb = b.episodeNumber || b.episode || 1;
-                        return ea - eb;
-                    });
-
-                    sorted.forEach(ep => {
-                        const card = document.createElement('div');
-                        card.className = 'episode-card';
-                        const epTitle = ep.primaryTitle || ep.title || `Episode ${ep.episodeNumber || ep.episode || 1}`;
-                        const epImage = ep.primaryImage?.url || '';
-                        const epOverview = ep.overview || ep.plot || '';
-                        const epAirDate = ep.releaseDate || ep.airDate || '';
-                        const season = ep.seasonNumber || ep.season || 1;
-                        const number = ep.episodeNumber || ep.episode || 1;
-
-                        card.dataset.season = season;
-
-                        card.innerHTML = `
-                  <div class="thumb">
-                    <img src="${epImage}" alt="${epTitle}" loading="lazy" onerror="this.style.display='none';">
-                    <span class="ep-number">S${season} · E${number}</span>
-                  </div>
-                  <div class="ep-info">
-                    <div class="ep-title">${epTitle}</div>
-                    <div class="ep-overview">${epOverview || 'No description available.'}</div>
-                    <div class="ep-meta">
-                      <span class="ep-airdate">${epAirDate || ''}</span>
-                      <button class="btn-play-ep" data-id="${currentDetailId}" data-season="${season}" data-ep="${number}">▶ Play</button>
-                    </div>
-                  </div>
-                `;
-                        episodeGrid.appendChild(card);
-                    });
-
-                    // Attach play events
-                    document.querySelectorAll('.btn-play-ep').forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            const id = btn.dataset.id;
-                            const season = btn.dataset.season;
-                            const ep = btn.dataset.ep;
-                            window.open(`${VIXSRC_BASE}/tv/${id}/${season}/${ep}`, '_blank');
-                        });
-                    });
-
-                    // Apply initial filter based on dropdown selection
-                    filterEpisodes(seasonSelect.value);
-                } else {
-                    episodeGrid.innerHTML =
-                        `<p style="color:#888; grid-column:1/-1; padding:20px;">No episodes available.</p>`;
-                }
-            } else {
-                episodeSection.classList.add('hidden');
-            }
+            try {
+                const similar = await fetchSimilar(tmdbId, 'movie');
+                renderSimilar(similar);
+            } catch (_) { renderSimilar([]); }
 
             document.title = `${title} — CineStream`;
         }
 
-        // ─── Filter Episodes ───
-        function filterEpisodes(season) {
-            const cards = document.querySelectorAll('.episode-card');
-            cards.forEach(card => {
-                if (season === 'all' || String(card.dataset.season) === String(season)) {
-                    card.style.display = 'flex';
+        async function renderTvDetail(data) {
+            const title = data.name || 'Untitled';
+            const year = data.first_air_date ? data.first_air_date.slice(0, 4) : '—';
+            const rating = data.vote_average ? data.vote_average.toFixed(1) : '—';
+            const runtime = data.episode_run_time && data.episode_run_time.length > 0 ?
+                `${data.episode_run_time[0]} min` : '—';
+            const genres = data.genres || [];
+            const poster = data.poster_path ? getImageUrl(data.poster_path) : '';
+            const backdrop = data.backdrop_path ? getBackdropUrl(data.backdrop_path) : poster;
+            const overview = data.overview || 'No overview available.';
+            const seasons = data.seasons || [];
+            const tmdbId = data.id;
+
+            const realSeasons = seasons
+                .filter(s => s.season_number > 0)
+                .sort((a, b) => a.season_number - b.season_number);
+
+            currentSeasons = realSeasons.map(s => ({
+                season_number: s.season_number,
+                name: s.name || `Season ${s.season_number}`,
+                episode_count: s.episode_count || 0
+            }));
+
+            currentTvId = tmdbId;
+
+            detailBackdrop.style.backgroundImage = `url(${backdrop})`;
+            detailPoster.src = poster || 'https://via.placeholder.com/300x450/1a1a1a/444?text=No+Poster';
+            detailPoster.alt = title;
+            detailTitle.textContent = title;
+            detailMeta.innerHTML = `
+            <span class="rating">⭐ ${rating}</span>
+            <span class="year">${year}</span>
+            <span class="runtime">${runtime}</span>
+          `;
+            detailGenres.innerHTML = genres.map(g => `<span>${g.name}</span>`).join('');
+            detailOverview.textContent = overview;
+
+            // Play button -> first episode
+            detailPlayBtn.textContent = '▶ Watch Series';
+            detailPlayBtn.onclick = () => {
+                const firstSeason = realSeasons.length > 0 ? realSeasons[0].season_number : 1;
+                (async () => {
+                    try {
+                        const eps = await fetchSeasonEpisodes(tmdbId, firstSeason);
+                        if (eps && eps.length > 0) {
+                            const firstEp = eps[0];
+                            openWatch('tv', tmdbId, firstEp.season_number, firstEp.episode_number, title);
+                        } else {
+                            alert('No episodes available.');
+                        }
+                    } catch (_) {
+                        alert('Could not fetch episodes.');
+                    }
+                })();
+            };
+
+            // Season dropdown
+            seasonSelectWrapper.classList.add('visible');
+            movieYearLabel.classList.remove('visible');
+
+            let optionsHTML = '';
+            if (realSeasons.length > 1) {
+                optionsHTML += `<option value="all">All Seasons</option>`;
+            }
+            realSeasons.forEach(s => {
+                optionsHTML += `<option value="${s.season_number}">${s.name}</option>`;
+            });
+            if (optionsHTML === '') {
+                optionsHTML = `<option value="1">Season 1</option>`;
+            }
+            seasonSelect.innerHTML = optionsHTML;
+            if (realSeasons.length > 1) {
+                seasonSelect.value = 'all';
+            } else if (realSeasons.length === 1) {
+                seasonSelect.value = String(realSeasons[0].season_number);
+            } else {
+                seasonSelect.value = '1';
+            }
+
+            // Episodes
+            episodeSection.classList.remove('hidden');
+            similarSection.classList.add('hidden');
+            currentSeasonEpisodes = {};
+
+            const initialSeason = seasonSelect.value;
+            if (initialSeason === 'all') {
+                await loadAllEpisodes(tmdbId, realSeasons);
+            } else {
+                await loadSeasonEpisodes(tmdbId, parseInt(initialSeason, 10));
+            }
+
+            // Load cast
+            try {
+                const credits = await fetchCredits(tmdbId, 'tv');
+                renderCast(credits.cast || []);
+            } catch (_) { renderCast([]); }
+
+            document.title = `${title} — CineStream`;
+        }
+
+        async function loadSeasonEpisodes(tvId, seasonNumber) {
+            const cacheKey = String(seasonNumber);
+            if (currentSeasonEpisodes[cacheKey]) {
+                renderEpisodes(currentSeasonEpisodes[cacheKey], seasonNumber);
+                return;
+            }
+
+            episodeGrid.innerHTML = `
+            <div class="episode-empty">
+              <div class="spinner" style="margin:0 auto 12px;"></div>
+              <strong>Loading episodes…</strong>
+            </div>
+          `;
+
+            try {
+                const eps = await fetchSeasonEpisodes(tvId, seasonNumber);
+                currentSeasonEpisodes[cacheKey] = eps;
+                renderEpisodes(eps, seasonNumber);
+            } catch (err) {
+                console.error('Error loading episodes:', err);
+                episodeGrid.innerHTML = `
+              <div class="episode-empty">
+                <span class="icon" style="font-size:32px;">⚠️</span>
+                <strong>Failed to load episodes.</strong>
+              </div>
+            `;
+            }
+        }
+
+        async function loadAllEpisodes(tvId, seasons) {
+            const allEpisodes = [];
+            for (const s of seasons) {
+                const key = String(s.season_number);
+                if (currentSeasonEpisodes[key]) {
+                    allEpisodes.push(...currentSeasonEpisodes[key]);
                 } else {
-                    card.style.display = 'none';
+                    try {
+                        const eps = await fetchSeasonEpisodes(tvId, s.season_number);
+                        currentSeasonEpisodes[key] = eps;
+                        allEpisodes.push(...eps);
+                    } catch (_) { /* ignore */ }
                 }
+            }
+            allEpisodes.sort((a, b) => {
+                if (a.season_number !== b.season_number) return a.season_number - b.season_number;
+                return (a.episode_number || 0) - (b.episode_number || 0);
+            });
+            renderEpisodes(allEpisodes, 'all');
+        }
+
+        function renderEpisodes(episodes, seasonNumber) {
+            episodeGrid.innerHTML = '';
+
+            let displayEps = episodes;
+            if (seasonNumber !== 'all') {
+                displayEps = episodes.filter(e => e.season_number === parseInt(seasonNumber, 10));
+            }
+
+            if (!displayEps || displayEps.length === 0) {
+                episodeGrid.innerHTML = `
+              <div class="episode-empty">
+                <span class="icon" style="font-size:32px;">📭</span>
+                <strong>No episodes available for this selection.</strong>
+              </div>
+            `;
+                return;
+            }
+
+            const tvId = currentTvId;
+            const title = document.getElementById('detailTitle').textContent;
+
+            displayEps.forEach(ep => {
+                const epNumber = ep.episode_number || 0;
+                const epTitle = ep.name || `Episode ${epNumber}`;
+                const epOverview = ep.overview || '';
+                const epAirDate = ep.air_date || '';
+                const epStill = ep.still_path ? getImageUrl(ep.still_path) : '';
+                const seasonNum = ep.season_number || 1;
+
+                const card = document.createElement('div');
+                card.className = 'episode-card';
+                card.innerHTML = `
+              <div class="thumb">
+                <img src="${epStill}" alt="${epTitle}" loading="lazy" onerror="this.style.display='none';">
+                <span class="ep-number">S${seasonNum} · E${epNumber}</span>
+              </div>
+              <div class="ep-info">
+                <div class="ep-title">${epTitle}</div>
+                <div class="ep-overview">${epOverview || 'No description available.'}</div>
+                <div class="ep-meta">
+                  <span class="ep-airdate">${formatDate(epAirDate)}</span>
+                  <button class="btn-play-ep" data-tv="${tvId}" data-season="${seasonNum}" data-ep="${epNumber}">▶ Play</button>
+                </div>
+              </div>
+            `;
+                // Click on card plays episode
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('.btn-play-ep')) return;
+                    const btn = card.querySelector('.btn-play-ep');
+                    const tv = btn.dataset.tv;
+                    const season = btn.dataset.season;
+                    const ep = btn.dataset.ep;
+                    if (tv) {
+                        openWatch('tv', parseInt(tv, 10), parseInt(season, 10), parseInt(ep, 10), title);
+                    }
+                });
+                episodeGrid.appendChild(card);
+            });
+
+            // Attach play events to buttons
+            document.querySelectorAll('.btn-play-ep').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const tv = btn.dataset.tv;
+                    const season = btn.dataset.season;
+                    const ep = btn.dataset.ep;
+                    if (tv) {
+                        openWatch('tv', parseInt(tv, 10), parseInt(season, 10), parseInt(ep, 10), title);
+                    }
+                });
             });
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  API CALLS
+        //  WATCH VIEW
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        async function fetchPopular() {
-            try {
-                const res = await fetch(`${API_BASE}/titles?sortBy=SORT_BY_POPULARITY&limit=24`);
-                if (!res.ok) throw new Error('Failed to fetch popular');
-                const data = await res.json();
-                return data.titles || [];
-            } catch (err) {
-                console.error(err);
-                return [];
+        function openWatch(type, id, season, episode, title) {
+            currentWatchItem = { type, id, season, episode, title };
+            switchView('watch');
+
+            watchTitle.textContent = title || 'Now Playing';
+            let url = '';
+            if (type === 'movie') {
+                url = `${VIXSRC_BASE}/movie/${id}`;
+            } else {
+                url = `${VIXSRC_BASE}/tv/${id}/${season}/${episode}`;
             }
+            currentWatchUrl = url;
+
+            // Try to embed in iframe
+            fallbackMsg.classList.add('hidden');
+            watchIframe.classList.remove('hidden');
+            watchIframe.src = url;
+
+            // If iframe fails, show fallback after timeout
+            let iframeLoaded = false;
+            const loadHandler = () => { iframeLoaded = true; };
+            watchIframe.addEventListener('load', loadHandler);
+            setTimeout(() => {
+                if (!iframeLoaded) {
+                    watchIframe.classList.add('hidden');
+                    fallbackMsg.classList.remove('hidden');
+                }
+                watchIframe.removeEventListener('load', loadHandler);
+            }, 5000);
+
+            // Populate sidebar
+            populateSidebar(type, id, season, episode);
         }
 
-        async function searchMovies(query) {
-            try {
-                const res = await fetch(`${API_BASE}/search/titles?query=${encodeURIComponent(query.trim())}&limit=24`);
-                if (!res.ok) throw new Error('Search failed');
-                const data = await res.json();
-                return data.titles || [];
-            } catch (err) {
-                console.error(err);
-                return [];
-            }
-        }
-
-        async function fetchDetails(id) {
-            const res = await fetch(`${API_BASE}/titles/${id}`);
-            if (!res.ok) throw new Error('Details fetch failed');
-            return res.json();
-        }
-
-        async function fetchEpisodes(id) {
-            const res = await fetch(`${API_BASE}/titles/${id}/episodes`);
-            if (!res.ok) return [];
-            const data = await res.json();
-            return data.episodes || [];
-        }
-
-        async function fetchSeasons(id) {
-            try {
-                const res = await fetch(`${API_BASE}/titles/${id}/seasons`);
-                if (!res.ok) return [];
-                const data = await res.json();
-                return data.seasons || [];
-            } catch (err) {
-                console.warn('Seasons fetch failed:', err);
-                return [];
+        async function populateSidebar(type, id, season, episode) {
+            sidebarList.innerHTML = '';
+            if (type === 'movie') {
+                sidebarTitle.textContent = 'Similar Movies';
+                try {
+                    const similar = await fetchSimilar(id, 'movie');
+                    similar.slice(0, 6).forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'sidebar-item';
+                        const poster = item.poster_path ? getImageUrl(item.poster_path) : '';
+                        const title = item.title || item.name || 'Untitled';
+                        div.innerHTML = `
+                  <img src="${poster}" alt="${title}" onerror="this.style.display='none';">
+                  <div class="info">
+                    <div class="title">${title}</div>
+                    <div class="sub">${item.release_date ? item.release_date.slice(0,4) : ''}</div>
+                  </div>
+                `;
+                        div.addEventListener('click', () => {
+                            openDetail(item.id, 'movie');
+                        });
+                        sidebarList.appendChild(div);
+                    });
+                } catch (_) {
+                    sidebarList.innerHTML = '<p style="color:#666;">No similar movies found.</p>';
+                }
+            } else {
+                // TV: show next episodes from current season, or next season
+                sidebarTitle.textContent = 'Next Episodes';
+                try {
+                    const eps = await fetchSeasonEpisodes(id, season);
+                    const sorted = eps.sort((a, b) => (a.episode_number || 0) - (b.episode_number || 0));
+                    const currentEpNum = parseInt(episode, 10);
+                    let nextEps = sorted.filter(e => e.episode_number > currentEpNum);
+                    if (nextEps.length === 0) {
+                        const seasons = currentSeasons.map(s => s.season_number).sort((a, b) => a - b);
+                        const currentSeasonIdx = seasons.indexOf(parseInt(season, 10));
+                        if (currentSeasonIdx !== -1 && currentSeasonIdx < seasons.length - 1) {
+                            const nextSeason = seasons[currentSeasonIdx + 1];
+                            const nextEpsData = await fetchSeasonEpisodes(id, nextSeason);
+                            if (nextEpsData && nextEpsData.length > 0) {
+                                nextEps = nextEpsData.sort((a, b) => (a.episode_number || 0) - (b.episode_number || 0));
+                            }
+                        }
+                    }
+                    if (nextEps.length === 0) {
+                        sidebarList.innerHTML = '<p style="color:#666;">No upcoming episodes.</p>';
+                        return;
+                    }
+                    const title = document.getElementById('detailTitle').textContent;
+                    nextEps.slice(0, 6).forEach(ep => {
+                        const div = document.createElement('div');
+                        div.className = 'sidebar-item';
+                        const still = ep.still_path ? getImageUrl(ep.still_path) : '';
+                        const epTitle = ep.name || `Episode ${ep.episode_number}`;
+                        div.innerHTML = `
+                  <img src="${still}" alt="${epTitle}" onerror="this.style.display='none';">
+                  <div class="info">
+                    <div class="title">S${ep.season_number} · E${ep.episode_number} ${epTitle}</div>
+                    <div class="sub">${formatDate(ep.air_date)}</div>
+                  </div>
+                `;
+                        div.addEventListener('click', () => {
+                            openWatch('tv', id, ep.season_number, ep.episode_number, title);
+                        });
+                        sidebarList.appendChild(div);
+                    });
+                } catch (_) {
+                    sidebarList.innerHTML = '<p style="color:#666;">Could not load episodes.</p>';
+                }
             }
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  OPEN DETAIL
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        async function openDetail(id) {
+        async function openDetail(id, type) {
             if (!id) return;
             currentDetailId = id;
+            currentDetailType = type || 'movie';
             switchView('detail');
 
-            // Show loading state
             detailTitle.textContent = 'Loading…';
             detailOverview.textContent = 'Please wait while we fetch the details.';
             episodeGrid.innerHTML = '';
             episodeSection.classList.add('hidden');
+            similarSection.classList.add('hidden');
             seasonSelectWrapper.classList.remove('visible');
             movieYearLabel.classList.remove('visible');
+            castScroll.innerHTML = '';
+            similarGrid.innerHTML = '';
 
             try {
-                const [details, episodes, seasons] = await Promise.all([
-                    fetchDetails(id),
-                    fetchEpisodes(id),
-                    fetchSeasons(id)
-                ]);
-                renderDetail(details, episodes, seasons);
+                if (currentDetailType === 'movie') {
+                    const data = await fetchMovieDetails(id);
+                    await renderMovieDetail(data);
+                } else {
+                    const data = await fetchTvDetails(id);
+                    await renderTvDetail(data);
+                }
             } catch (err) {
                 console.error('Error loading detail:', err);
                 detailTitle.textContent = 'Error loading content';
@@ -1180,12 +1711,52 @@
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  SEASON DROPDOWN CHANGE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        seasonSelect.addEventListener('change', async function() {
+            const val = this.value;
+            if (!currentTvId) return;
+
+            if (val === 'all') {
+                await loadAllEpisodes(currentTvId, currentSeasons);
+            } else {
+                const seasonNum = parseInt(val, 10);
+                await loadSeasonEpisodes(currentTvId, seasonNum);
+            }
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  WATCH BACK BUTTON
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        watchBackBtn.addEventListener('click', () => {
+            watchIframe.src = '';
+            switchView('detail');
+            if (currentDetailId) {
+                openDetail(currentDetailId, currentDetailType);
+            }
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  OPEN IN NEW TAB
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        openNewTabBtn.addEventListener('click', () => {
+            if (currentWatchUrl) {
+                window.open(currentWatchUrl, '_blank');
+            }
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  SEARCH & HOME
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         async function loadHome() {
             showLoading(homeGrid);
-            const movies = await fetchPopular();
-            renderHomeGrid(movies);
+            try {
+                const results = await fetchTrending();
+                renderHomeGrid(results);
+            } catch (err) {
+                console.error('Error loading trending:', err);
+                showStatus(homeGrid, '⚠️', 'Failed to load trending content. Please try again.');
+            }
         }
 
         async function performSearch() {
@@ -1195,9 +1766,16 @@
                 return;
             }
             showLoading(homeGrid);
-            const results = await searchMovies(query);
-            renderHomeGrid(results);
-            if (!homeView.classList.contains('hidden') === false) {
+            try {
+                const results = await searchTmdb(query);
+                renderHomeGrid(results);
+            } catch (err) {
+                console.error('Search error:', err);
+                showStatus(homeGrid, '⚠️', 'Search failed. Please try again.');
+            }
+            if (!homeView.classList.contains('hidden')) {
+                // already on home
+            } else {
                 switchView('home');
             }
         }
@@ -1227,30 +1805,28 @@
             }
         });
 
-        // Season filter listener
-        seasonSelect.addEventListener('change', function() {
-            filterEpisodes(this.value);
-        });
-
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  INIT
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         loadHome();
 
         window.addEventListener('popstate', () => {
-            if (detailView.classList.contains('hidden') === false) {
+            if (!detailView.classList.contains('hidden') && watchView.classList.contains('hidden')) {
                 switchView('home');
+            } else if (!watchView.classList.contains('hidden')) {
+                switchView('detail');
             }
         });
 
-        const originalOpenDetail = openDetail;
-        openDetail = async function(id) {
-            await originalOpenDetail(id);
+        const origOpenDetail = openDetail;
+        openDetail = async function(id, type) {
+            await origOpenDetail(id, type);
             history.pushState({ detail: true }, '');
         };
         window.openDetail = openDetail;
 
-        console.log('🎬 CineStream ready — click any movie or show to explore!');
+        console.log('🎬 CineStream ready — powered by TMDB');
+        console.log('🔑 Click any movie or show to explore!');
     </script>
 </body>
 </html>
